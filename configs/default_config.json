@@ -1,0 +1,51 @@
+{
+  "_description": "Default configuration for all cyclic peptide MCP scripts",
+  "_note": "This file contains common settings that can be overridden by script-specific configs",
+
+  "global": {
+    "environment": "auto",
+    "verbosity": "info",
+    "error_handling": "graceful",
+    "temp_directory": "/tmp/cycpep_mcp"
+  },
+
+  "input": {
+    "default_format": "csv",
+    "default_helm_column": "HELM",
+    "default_encoding": "utf-8",
+    "max_file_size_mb": 100
+  },
+
+  "processing": {
+    "default_limit": 100,
+    "max_limit": 10000,
+    "timeout_seconds": 300,
+    "memory_limit_mb": 2048
+  },
+
+  "repo": {
+    "path": "repo/helm-gpt",
+    "fallback_on_failure": true,
+    "lazy_loading": true,
+    "cache_functions": true
+  },
+
+  "models": {
+    "base_path": "examples/data/models",
+    "cache_loaded_models": true,
+    "model_timeout": 60
+  },
+
+  "output": {
+    "default_format": "csv",
+    "create_directories": true,
+    "overwrite_existing": true,
+    "include_timestamps": true
+  },
+
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file_logging": false
+  }
+}

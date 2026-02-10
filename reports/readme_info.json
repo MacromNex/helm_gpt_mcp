@@ -1,0 +1,368 @@
+{
+  "project_name": "CycPep-Tools MCP",
+  "description": "MCP server for cyclic peptide computational analysis - providing HELM-to-SMILES conversion, permeability prediction, and KRAS binding affinity analysis",
+  "server_name": "cycpep-tools",
+  "version": "1.0.0",
+  "framework": "FastMCP 2.14.1",
+  "environment": {
+    "main_env": "./env (Python 3.10)",
+    "legacy_env": "./env_py3.7 (Python 3.7)",
+    "disk_space": "8+ GB (6.8 GB environments + 1.4 GB data/models)",
+    "recommended_ram": "4+ GB"
+  },
+  "synchronous_tools": [
+    {
+      "name": "helm_to_smiles",
+      "type": "sync",
+      "description": "Convert HELM notation to SMILES representation",
+      "parameters": ["helm_input", "input_file", "output_file", "helm_column", "limit"],
+      "example_prompt": "Convert this HELM notation to SMILES: PEPTIDE1{G.R.G.D.S.P}$$$$",
+      "processing_speed": "~33 sequences/second"
+    },
+    {
+      "name": "predict_permeability",
+      "type": "sync",
+      "description": "Predict membrane permeability using Random Forest model",
+      "parameters": ["helm_input", "input_file", "output_file", "helm_column", "limit", "include_statistics"],
+      "example_prompt": "Predict membrane permeability for PEPTIDE1{G.R.G.D.S.P}$$$$",
+      "model": "Random Forest (14.8 MB)",
+      "processing_speed": "~33 sequences/second"
+    },
+    {
+      "name": "predict_kras_binding",
+      "type": "sync",
+      "description": "Predict KRAS binding affinity (KD values in μM)",
+      "parameters": ["helm_input", "input_file", "output_file", "helm_column", "limit", "include_statistics", "top_binders_count"],
+      "example_prompt": "Predict KRAS binding affinity for PEPTIDE1{G.R.G.D.S.P}$$$$",
+      "model": "XGBoost (3.1 MB)",
+      "processing_speed": "~33 sequences/second"
+    },
+    {
+      "name": "validate_helm_notation",
+      "type": "sync",
+      "description": "Validate HELM syntax for cyclic peptides",
+      "parameters": ["helm_input"],
+      "example_prompt": "Validate this HELM notation: PEPTIDE1{G.R.G.D.S.P}$$$$",
+      "processing_speed": "<5 seconds"
+    },
+    {
+      "name": "get_server_info",
+      "type": "sync",
+      "description": "Get server capabilities and tool information",
+      "parameters": [],
+      "example_prompt": "What tools are available from cycpep-tools?",
+      "processing_speed": "<5 seconds"
+    },
+    {
+      "name": "get_model_info",
+      "type": "sync",
+      "description": "Get ML model availability and status",
+      "parameters": [],
+      "example_prompt": "Show me the status of the prediction models",
+      "processing_speed": "<5 seconds"
+    }
+  ],
+  "asynchronous_tools": [
+    {
+      "name": "submit_helm_to_smiles_batch",
+      "type": "async",
+      "description": "Large HELM to SMILES conversion for >1000 sequences",
+      "parameters": ["input_file", "output_file", "helm_column", "job_name"],
+      "example_prompt": "Submit a large HELM conversion job for @examples/data/sequences/CycPeptMPDB_Peptide_All.csv with 2000 sequences",
+      "use_case": "Large dataset conversion"
+    },
+    {
+      "name": "submit_permeability_batch",
+      "type": "async",
+      "description": "Large permeability prediction for >1000 sequences",
+      "parameters": ["input_file", "output_file", "helm_column", "job_name"],
+      "example_prompt": "Submit permeability prediction job for large dataset screening",
+      "use_case": "Virtual screening"
+    },
+    {
+      "name": "submit_kras_binding_batch",
+      "type": "async",
+      "description": "Large KRAS binding prediction for >1000 sequences",
+      "parameters": ["input_file", "output_file", "helm_column", "job_name"],
+      "example_prompt": "Submit KRAS binding prediction for therapeutic screening",
+      "use_case": "Target screening"
+    }
+  ],
+  "job_management_tools": [
+    {
+      "name": "get_job_status",
+      "description": "Check job progress and status",
+      "use_case": "Monitor running jobs"
+    },
+    {
+      "name": "get_job_result",
+      "description": "Retrieve completed job results",
+      "use_case": "Get final outputs"
+    },
+    {
+      "name": "get_job_log",
+      "description": "View job execution logs",
+      "use_case": "Debug failures"
+    },
+    {
+      "name": "cancel_job",
+      "description": "Cancel running jobs",
+      "use_case": "Resource management"
+    },
+    {
+      "name": "list_jobs",
+      "description": "List all jobs with filters",
+      "use_case": "Project oversight"
+    },
+    {
+      "name": "cleanup_completed_jobs",
+      "description": "Remove old completed jobs",
+      "use_case": "Storage maintenance"
+    }
+  ],
+  "scripts": [
+    {
+      "name": "helm_to_smiles.py",
+      "path": "scripts/helm_to_smiles.py",
+      "description": "Convert HELM notation to SMILES representation",
+      "example_command": "python scripts/helm_to_smiles.py --input \"PEPTIDE1{G.R.G.D.S.P}$$$$\" --output results/converted.csv",
+      "dependencies": ["pandas", "pathlib", "argparse"],
+      "config": "configs/helm_to_smiles_config.json"
+    },
+    {
+      "name": "predict_permeability.py",
+      "path": "scripts/predict_permeability.py",
+      "description": "Predict membrane permeability using Random Forest model",
+      "example_command": "python scripts/predict_permeability.py --input examples/data/sequences/CycPeptMPDB_Peptide_All.csv --limit 50",
+      "dependencies": ["pandas", "numpy", "scikit-learn"],
+      "config": "configs/predict_permeability_config.json"
+    },
+    {
+      "name": "predict_kras_binding.py",
+      "path": "scripts/predict_kras_binding.py",
+      "description": "Predict KRAS binding affinity (KD values in μM)",
+      "example_command": "python scripts/predict_kras_binding.py --input examples/data/sequences/CycPeptMPDB_Peptide_All.csv --limit 50",
+      "dependencies": ["pandas", "numpy", "xgboost"],
+      "config": "configs/predict_kras_binding_config.json"
+    }
+  ],
+  "demo_data": [
+    {
+      "file": "sequences/CycPeptMPDB_Peptide_All.csv",
+      "path": "examples/data/sequences/CycPeptMPDB_Peptide_All.csv",
+      "size": "15.8 MB",
+      "description": "Cyclic peptide database with HELM notation (~50K sequences)",
+      "used_by": ["all tools", "batch processing", "virtual screening"],
+      "sequence_count": "~50,000"
+    },
+    {
+      "file": "sequences/biotherapeutics_dict_prot_flt.csv",
+      "path": "examples/data/sequences/biotherapeutics_dict_prot_flt.csv",
+      "size": "6.7 MB",
+      "description": "ChEMBL bioactive peptides dataset (~20K sequences)",
+      "used_by": ["training", "screening", "validation"],
+      "sequence_count": "~20,000"
+    },
+    {
+      "file": "sequences/CycPeptMPDB_Monomer_All.csv",
+      "path": "examples/data/sequences/CycPeptMPDB_Monomer_All.csv",
+      "size": "724 KB",
+      "description": "Amino acid property database for reference",
+      "used_by": ["reference", "property calculation"],
+      "sequence_count": "~1,000"
+    },
+    {
+      "file": "models/regression_rf.pkl",
+      "path": "examples/data/models/regression_rf.pkl",
+      "size": "14.8 MB",
+      "description": "Random Forest model for membrane permeability prediction",
+      "used_by": ["predict_permeability", "submit_permeability_batch"],
+      "model_type": "scikit-learn RandomForestRegressor"
+    },
+    {
+      "file": "models/kras_xgboost_reg.pkl",
+      "path": "examples/data/models/kras_xgboost_reg.pkl",
+      "size": "3.1 MB",
+      "description": "XGBoost model for KRAS binding affinity prediction",
+      "used_by": ["predict_kras_binding", "submit_kras_binding_batch"],
+      "model_type": "XGBoost Regressor"
+    }
+  ],
+  "configs": [
+    {
+      "file": "default_config.json",
+      "path": "configs/default_config.json",
+      "description": "Global server configuration and defaults",
+      "parameters": {
+        "environment": "production",
+        "verbosity": 1,
+        "paths": {
+          "models_base": "examples/data/models",
+          "scripts_base": "scripts"
+        },
+        "repo_fallback": true,
+        "max_limit": 10000
+      }
+    },
+    {
+      "file": "helm_to_smiles_config.json",
+      "path": "configs/helm_to_smiles_config.json",
+      "description": "Configuration for HELM to SMILES conversion",
+      "parameters": {
+        "input_format": "csv",
+        "helm_column": "HELM",
+        "limit": 100,
+        "validate_output": true
+      }
+    },
+    {
+      "file": "predict_permeability_config.json",
+      "path": "configs/predict_permeability_config.json",
+      "description": "Configuration for permeability prediction",
+      "parameters": {
+        "model_path": "examples/data/models/regression_rf.pkl",
+        "model_type": "random_forest",
+        "score_thresholds": {
+          "high": 0.7,
+          "medium": 0.4,
+          "low": 0.0
+        },
+        "include_statistics": true
+      }
+    },
+    {
+      "file": "predict_kras_binding_config.json",
+      "path": "configs/predict_kras_binding_config.json",
+      "description": "Configuration for KRAS binding prediction",
+      "parameters": {
+        "model_path": "examples/data/models/kras_xgboost_reg.pkl",
+        "binding_thresholds": {
+          "strong": 1.0,
+          "moderate": 10.0,
+          "weak": 100.0
+        },
+        "top_binders_count": 5
+      }
+    }
+  ],
+  "example_workflows": [
+    {
+      "name": "Single Sequence Analysis",
+      "description": "Analyze drug properties of one cyclic peptide",
+      "steps": [
+        "Validate HELM notation",
+        "Convert to SMILES",
+        "Predict membrane permeability",
+        "Predict KRAS binding affinity",
+        "Interpret results for drug discovery"
+      ],
+      "prompt_example": "Analyze the drug properties of this RGD peptide: PEPTIDE1{G.R.G.D.S.P}$$$$",
+      "expected_time": "< 30 seconds"
+    },
+    {
+      "name": "Dataset Screening",
+      "description": "Screen peptide library for therapeutic potential",
+      "steps": [
+        "Process sequences from CSV file",
+        "Convert HELM notations to SMILES",
+        "Predict membrane permeability",
+        "Identify top candidates",
+        "Predict KRAS binding for top candidates"
+      ],
+      "prompt_example": "Screen the database @examples/data/sequences/CycPeptMPDB_Peptide_All.csv for the top 10 most permeable peptides",
+      "expected_time": "1-3 minutes for 50-100 sequences"
+    },
+    {
+      "name": "Large-Scale Virtual Screening",
+      "description": "Screen large peptide library for KRAS inhibitors",
+      "steps": [
+        "Submit background job for large dataset",
+        "Monitor job progress",
+        "Identify top KRAS binders",
+        "Predict permeability for top candidates",
+        "Rank final drug candidates"
+      ],
+      "prompt_example": "Perform large-scale KRAS screening of @examples/data/sequences/biotherapeutics_dict_prot_flt.csv with 1000 sequences",
+      "expected_time": "5-10 minutes for 1000 sequences"
+    }
+  ],
+  "claude_code_references": [
+    {
+      "reference": "@examples/data/sequences/CycPeptMPDB_Peptide_All.csv",
+      "description": "Main cyclic peptide dataset with HELM notation"
+    },
+    {
+      "reference": "@examples/data/sequences/biotherapeutics_dict_prot_flt.csv",
+      "description": "ChEMBL bioactive peptides for screening"
+    },
+    {
+      "reference": "@configs/predict_permeability_config.json",
+      "description": "Permeability prediction settings"
+    },
+    {
+      "reference": "@configs/predict_kras_binding_config.json",
+      "description": "KRAS binding prediction settings"
+    },
+    {
+      "reference": "@results/",
+      "description": "Output directory for analysis results"
+    }
+  ],
+  "installation": {
+    "package_manager": "mamba (recommended) or conda",
+    "python_version": "3.10+ for MCP, 3.7 for HELM-GPT",
+    "commands": [
+      "mamba create -p ./env python=3.10 pip -y",
+      "mamba activate ./env",
+      "mamba run -p ./env pip install loguru click pandas numpy tqdm fastmcp scikit-learn scipy"
+    ],
+    "mcp_registration": [
+      "fastmcp install src/server.py --name cycpep-tools",
+      "claude mcp add cycpep-tools -- $(pwd)/env/bin/python $(pwd)/src/server.py"
+    ]
+  },
+  "performance": {
+    "processing_speed": {
+      "helm_to_smiles": "~33 sequences/second",
+      "permeability_prediction": "~33 sequences/second",
+      "kras_binding": "~33 sequences/second",
+      "combined_analysis": "~15 sequences/second"
+    },
+    "memory_usage": {
+      "base_server": "~50 MB",
+      "with_models": "~100 MB",
+      "per_1000_sequences": "+20 MB"
+    },
+    "timeout_recommendations": {
+      "synchronous_tools": "30 seconds (up to 1000 sequences)",
+      "asynchronous_jobs": "No timeout (background execution)"
+    }
+  },
+  "sample_helm_sequences": [
+    "PEPTIDE1{[Abu].[Sar].[meL].V.[meL].A.[dA].[meL].[meL].[meV].[Me_Bmt(E)]}$PEPTIDE1,PEPTIDE1,1:R3-20:R3$$$",
+    "PEPTIDE1{G.R.G.D.S.P}$$$$",
+    "PEPTIDE1{R.G.D.F.V}$$$$",
+    "PEPTIDE1{A.G.C}$PEPTIDE1,PEPTIDE1,1:R3-3:R3$$$"
+  ],
+  "status": {
+    "integration_tests": "100% pass rate (19/19 tests)",
+    "mcp_registration": "Successfully tested with Claude Code",
+    "server_startup": "< 1 second",
+    "production_ready": true
+  },
+  "readme_sections": [
+    "Overview and Features",
+    "Installation (dual environment setup)",
+    "Local Usage (Scripts)",
+    "MCP Server Installation (3 options)",
+    "Claude Code Usage (with @ references)",
+    "Available Tools (sync/async/job management)",
+    "Examples (3 comprehensive workflows)",
+    "Demo Data (5 datasets and models)",
+    "Configuration Files (4 JSON configs)",
+    "Troubleshooting (environment, MCP, performance, data issues)",
+    "Performance Characteristics",
+    "Development and Testing",
+    "License and Credits"
+  ]
+}

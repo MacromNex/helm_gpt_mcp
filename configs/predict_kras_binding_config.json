@@ -1,0 +1,54 @@
+{
+  "_description": "Configuration for cyclic peptide KRAS binding affinity prediction",
+  "_source": "Extracted from examples/use_case_4_predict_kras_binding.py",
+
+  "input": {
+    "format": "csv",
+    "helm_column": "HELM",
+    "encoding": "utf-8"
+  },
+
+  "model": {
+    "path": "examples/data/models/kras_xgboost_reg.pkl",
+    "type": "xgboost_regressor",
+    "fallback_enabled": true,
+    "score_to_kd_conversion": "log10"
+  },
+
+  "processing": {
+    "limit": 100,
+    "validate_helm": true,
+    "skip_invalid": true,
+    "conversion_timeout": 30
+  },
+
+  "prediction": {
+    "binding_thresholds": {
+      "strong": 1.0,
+      "moderate": 10.0,
+      "weak": 100.0
+    },
+    "score_thresholds": {
+      "high": 0.8,
+      "medium": 0.5,
+      "low": 0.0
+    },
+    "units": "μM",
+    "interpretation_enabled": true
+  },
+
+  "output": {
+    "format": "csv",
+    "include_statistics": true,
+    "include_interpretation": true,
+    "include_top_binders": true,
+    "top_binders_count": 5,
+    "sort_by": "kd_value"
+  },
+
+  "performance": {
+    "timeout_per_sequence": 10,
+    "max_retries": 2,
+    "parallel_processing": false
+  }
+}

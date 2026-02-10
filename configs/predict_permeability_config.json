@@ -1,0 +1,47 @@
+{
+  "_description": "Configuration for cyclic peptide cell permeability prediction",
+  "_source": "Extracted from examples/use_case_3_predict_permeability.py",
+
+  "input": {
+    "format": "csv",
+    "helm_column": "HELM",
+    "encoding": "utf-8"
+  },
+
+  "model": {
+    "path": "examples/data/models/regression_rf.pkl",
+    "type": "random_forest",
+    "fallback_enabled": true,
+    "batch_size": 1000
+  },
+
+  "processing": {
+    "limit": 100,
+    "validate_helm": true,
+    "skip_invalid": true,
+    "conversion_timeout": 30
+  },
+
+  "prediction": {
+    "score_threshold": {
+      "high": 0.7,
+      "medium": 0.4,
+      "low": 0.0
+    },
+    "interpretation_enabled": true,
+    "confidence_calculation": false
+  },
+
+  "output": {
+    "format": "csv",
+    "include_statistics": true,
+    "include_interpretation": true,
+    "include_metadata": true
+  },
+
+  "performance": {
+    "timeout_per_sequence": 10,
+    "max_retries": 2,
+    "parallel_processing": false
+  }
+}

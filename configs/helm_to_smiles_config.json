@@ -1,0 +1,30 @@
+{
+  "_description": "Configuration for HELM to SMILES conversion script",
+  "_source": "Extracted from examples/use_case_1_helm_to_smiles.py",
+
+  "input": {
+    "format": "csv",
+    "helm_column": "HELM",
+    "encoding": "utf-8"
+  },
+
+  "processing": {
+    "limit": 100,
+    "validate_input": true,
+    "skip_empty": true,
+    "error_handling": "continue"
+  },
+
+  "output": {
+    "format": "csv",
+    "include_errors": true,
+    "include_sequence_ids": true,
+    "validate_output": true
+  },
+
+  "helm": {
+    "validation_enabled": true,
+    "conversion_timeout": 30,
+    "fallback_on_repo_failure": true
+  }
+}

@@ -32,13 +32,16 @@ CycPep-Tools provides computational analysis capabilities for cyclic peptides th
 ├── env/                    # Main MCP environment (Python 3.10)
 ├── env_py3.7/             # Legacy HELM-GPT environment (Python 3.7)
 ├── src/
-│   ├── server.py           # MCP server with 15 tools
+│   ├── server.py           # MCP server with 21 tools
 │   ├── utils.py            # Shared utilities
 │   └── jobs/               # Job management system
 ├── scripts/
 │   ├── helm_to_smiles.py         # HELM notation converter
 │   ├── predict_permeability.py   # Membrane permeability predictor
 │   ├── predict_kras_binding.py   # KRAS binding affinity predictor
+│   ├── optimize_peptides.py      # RL-based peptide optimization
+│   ├── score_with_server.py      # Boltz2/Rosetta server scoring
+│   ├── mock_scoring_server.py    # Mock scoring server for testing
 │   └── lib/                      # Shared utilities
 ├── examples/
 │   └── data/               # Demo datasets and models
@@ -125,6 +128,9 @@ You can use the scripts directly without MCP for local processing.
 | `scripts/helm_to_smiles.py` | Convert HELM notation to SMILES | Chemical database standardization |
 | `scripts/predict_permeability.py` | Predict membrane permeability | Drug-like property screening |
 | `scripts/predict_kras_binding.py` | Predict KRAS binding affinity | Therapeutic target analysis |
+| `scripts/optimize_peptides.py` | RL-based peptide optimization | Drug candidate generation |
+| `scripts/score_with_server.py` | Boltz2/Rosetta server scoring | Structure-based evaluation |
+| `scripts/mock_scoring_server.py` | Mock scoring server for testing | Development and testing |
 
 ### Script Examples
 
@@ -333,6 +339,26 @@ These tools submit background jobs for large-scale processing:
 | `submit_helm_to_smiles_batch` | Large HELM conversion | >1000 sequences | `get_job_status`, `get_job_result` |
 | `submit_permeability_batch` | Large permeability prediction | Virtual screening | `get_job_log`, `cancel_job` |
 | `submit_kras_binding_batch` | Large KRAS binding prediction | Target screening | `list_jobs` |
+
+### Optimization Tools (RL-based peptide optimization)
+
+These tools use the HELM-GPT framework with the Python 3.7 environment for RL-based peptide design:
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `submit_optimize_peptides` | Submit RL optimization job | `prior_model`, `task` (permeability/kras_kd/kras_perm), `output_dir` |
+| `check_optimization_requirements` | Verify dependencies | None |
+| `get_optimization_tasks` | List available tasks | None |
+
+### Server-Based Scoring Tools (Boltz2/Rosetta)
+
+These tools score peptides using external computational servers:
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `score_with_server` | Score peptides (sync) | `helm_input` or `input_file`, `scorer_type` (boltz2/rosetta) |
+| `submit_server_scoring` | Score peptides (async batch) | `input_file`, `scorer_type`, `output_dir` |
+| `get_server_scorer_info` | Scorer configuration info | None |
 
 ### Job Management Tools
 
@@ -623,6 +649,15 @@ python tests/test_server_start.py
 # Run integration tests
 python tests/run_integration_tests.py
 ```
+
+### Dual-Environment Architecture
+
+The server uses two Python environments for job execution:
+
+- **Python 3.10 (`./env/`)**: Runs the MCP server and synchronous tools. Batch jobs (`submit_helm_to_smiles_batch`, `submit_permeability_batch`, `submit_kras_binding_batch`) also use this interpreter.
+- **Python 3.7 (`./env_py3.7/`)**: Used by optimization (`submit_optimize_peptides`) and server scoring (`submit_server_scoring`) jobs, which require RDKit and PyTorch from the HELM-GPT environment.
+
+The `JobManager.submit_job()` accepts an optional `python_path` parameter. Server.py defines `PY37_PATH` and passes it for optimization/scoring jobs.
 
 ### Starting Development Server
 

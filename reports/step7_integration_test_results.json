@@ -1,0 +1,136 @@
+{
+  "test_date": "2025-12-31T12:46:24.230802",
+  "server_path": "src/server.py",
+  "env_path": "./env",
+  "tests": {
+    "dependency_fastmcp": {
+      "status": "passed",
+      "execution_time": 1.1187784671783447,
+      "output": "fastmcp imported successfully\n",
+      "error": ""
+    },
+    "dependency_loguru": {
+      "status": "passed",
+      "execution_time": 0.17691898345947266,
+      "output": "loguru imported successfully\n",
+      "error": ""
+    },
+    "dependency_pandas": {
+      "status": "passed",
+      "execution_time": 0.41708874702453613,
+      "output": "pandas imported successfully\n",
+      "error": ""
+    },
+    "dependency_numpy": {
+      "status": "passed",
+      "execution_time": 0.18260431289672852,
+      "output": "numpy imported successfully\n",
+      "error": ""
+    },
+    "dependency_sklearn": {
+      "status": "passed",
+      "execution_time": 0.9151108264923096,
+      "output": "sklearn imported successfully\n",
+      "error": ""
+    },
+    "model_file_regression_rf.pkl": {
+      "status": "passed",
+      "file_path": "examples/data/models/regression_rf.pkl",
+      "file_size_mb": 14.073005676269531
+    },
+    "model_file_kras_xgboost_reg.pkl": {
+      "status": "passed",
+      "file_path": "examples/data/models/kras_xgboost_reg.pkl",
+      "file_size_mb": 2.9693078994750977
+    },
+    "config_file_default_config.json": {
+      "status": "passed",
+      "file_path": "configs/default_config.json",
+      "config_keys": [
+        "_description",
+        "_note",
+        "global",
+        "input",
+        "processing",
+        "repo",
+        "models",
+        "output",
+        "logging"
+      ]
+    },
+    "config_file_helm_to_smiles_config.json": {
+      "status": "passed",
+      "file_path": "configs/helm_to_smiles_config.json",
+      "config_keys": [
+        "_description",
+        "_source",
+        "input",
+        "processing",
+        "output",
+        "helm"
+      ]
+    },
+    "config_file_predict_permeability_config.json": {
+      "status": "passed",
+      "file_path": "configs/predict_permeability_config.json",
+      "config_keys": [
+        "_description",
+        "_source",
+        "input",
+        "model",
+        "processing",
+        "prediction",
+        "output",
+        "performance"
+      ]
+    },
+    "config_file_predict_kras_binding_config.json": {
+      "status": "passed",
+      "file_path": "configs/predict_kras_binding_config.json",
+      "config_keys": [
+        "_description",
+        "_source",
+        "input",
+        "model",
+        "processing",
+        "prediction",
+        "output",
+        "performance"
+      ]
+    },
+    "server_startup": {
+      "status": "passed",
+      "execution_time": 1.1196262836456299,
+      "output": "Server started successfully\n",
+      "error": "2025-12-31 12:46:28.015 | INFO     | jobs.manager:__init__:28 - JobManager initialized with jobs_dir: /home/xux/Desktop/CycPepMCP/CycPepMCP/tool-mcps/helm_gpt_mcp/jobs\n"
+    },
+    "claude_cli_registration": {
+      "status": "passed",
+      "execution_time": 2.0330071449279785,
+      "output": "Checking MCP server health...\n\ncycpep-tools: /home/xux/Desktop/CycPepMCP/CycPepMCP/tool-mcps/helm_gpt_mcp/env/bin/python /home/xux/Desktop/CycPepMCP/CycPepMCP/tool-mcps/helm_gpt_mcp/src/server.py - \u2713 Connected\n",
+      "error": ""
+    },
+    "fastmcp_dev_mode": {
+      "status": "passed",
+      "execution_time": 10.114598989486694,
+      "output": "Starting MCP inspector...\n\u2699\ufe0f Proxy server listening on localhost:6277\n\ud83d\udd11 Session token: 238c0ad7c0b50c381131103286de7929507ca253e8615f9328694c22cd7c5a68\n   Use this token to authenticate requests or set DANGEROUSLY_OMIT_AUTH=true to disable auth\n\n\ud83d\ude80 MCP Inspector is up and running at:\n   http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=238c0ad7c0b50c381131103286de7929507ca253e8615f9328694c22cd7c5a68\n\n\ud83c\udf10 Opening browser...\n",
+      "error": "2025-12-31 12:46:31.254 | INFO     | jobs.manager:__init__:28 - JobManager initialized with jobs_dir: /home/xux/Desktop/CycPepMCP/CycPepMCP/tool-mcps/helm_gpt_mcp/jobs\n"
+    }
+  },
+  "issues": [],
+  "summary": {
+    "total_tests": 14,
+    "passed": 14,
+    "failed": 0,
+    "pass_rate": "100.0%",
+    "total_issues": 0,
+    "high_severity_issues": 0,
+    "medium_severity_issues": 0
+  },
+  "performance": {
+    "total_execution_time": 16.077733755111694,
+    "average_test_time": 2.009716719388962,
+    "fastest_test": 0.17691898345947266,
+    "slowest_test": 10.114598989486694
+  }
+}

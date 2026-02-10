@@ -1,0 +1,167 @@
+{
+  "_description": "Configuration for server-based scoring (Boltz2 and Rosetta)",
+  "_source": "MCP wrapper for repo/helm-gpt/agent/scoring/server/",
+
+  "boltz2": {
+    "_description": "Boltz2 structure prediction and affinity scoring",
+    "server": {
+      "host": "http://localhost:8000",
+      "api": "/biology/mit/boltz2/predict",
+      "timeout": 300,
+      "max_retries": 3
+    },
+    "task": {
+      "seq_len": null,
+      "input_type": "helm",
+      "substrate": null,
+      "msa_path": null,
+      "cif_path": null
+    },
+    "boltz2": {
+      "recycling_steps": 3,
+      "sampling_steps": 200,
+      "diffusion_samples": 1,
+      "sampling_steps_affinity": 200,
+      "diffusion_samples_affinity": 5,
+      "affinity_mw_correction": false,
+      "output_format": "mmcif"
+    },
+    "default_target_scores": {
+      "iptm_scores": {
+        "weight": 1.0,
+        "transform": {
+          "trans_type": "sigmoid",
+          "low": 0.5,
+          "high": 0.9,
+          "params": {"k": 2}
+        }
+      },
+      "affinity_pic50": {
+        "weight": 1.0,
+        "transform": {
+          "trans_type": "sigmoid",
+          "low": 5.0,
+          "high": 8.0,
+          "params": {"k": 1.5}
+        }
+      }
+    },
+    "supported_scores": [
+      "iptm_scores",
+      "ipae_scores",
+      "affinity_pic50",
+      "complex_ipde_scores"
+    ],
+    "score_descriptions": {
+      "iptm_scores": "Interface predicted TM-score (0-1, higher is better confidence)",
+      "ipae_scores": "Interface predicted aligned error (lower is better)",
+      "affinity_pic50": "Predicted binding affinity as pIC50 (higher is stronger binding)",
+      "complex_ipde_scores": "Complex interface predicted distance error"
+    }
+  },
+
+  "rosetta": {
+    "_description": "Rosetta energy-based scoring for binding and aggregation",
+    "server": {
+      "host": "http://localhost:8001",
+      "api": "/rosetta/score",
+      "timeout": 600,
+      "max_retries": 3
+    },
+    "task": {
+      "seq_len": null,
+      "input_type": "helm",
+      "target_pdb": null,
+      "chain_id": "A",
+      "interface_chains": ["A", "B"]
+    },
+    "rosetta": {
+      "relax_structure": true,
+      "minimize_sidechains": true,
+      "pack_radius": 8.0,
+      "repack_rounds": 3,
+      "score_function": "ref2015"
+    },
+    "default_target_scores": {
+      "ddG": {
+        "weight": 1.0,
+        "transform": {
+          "trans_type": "rsigmoid",
+          "low": -20.0,
+          "high": 0.0,
+          "params": {"k": 0.5}
+        }
+      },
+      "SAP": {
+        "weight": 0.5,
+        "transform": {
+          "trans_type": "rsigmoid",
+          "low": 0.0,
+          "high": 100.0,
+          "params": {"k": 0.1}
+        }
+      },
+      "CMS": {
+        "weight": 0.3,
+        "transform": {
+          "trans_type": "sigmoid",
+          "low": 0.3,
+          "high": 0.9,
+          "params": {"k": 2}
+        }
+      }
+    },
+    "supported_scores": [
+      "ddG",
+      "SAP",
+      "CMS",
+      "total_score",
+      "interface_score"
+    ],
+    "score_descriptions": {
+      "ddG": "Binding free energy change in kcal/mol (lower/more negative is stronger binding)",
+      "SAP": "Spatial Aggregation Propensity (lower is less aggregation-prone)",
+      "CMS": "Contact Map Score (higher indicates better interface contacts)",
+      "total_score": "Rosetta total energy score (lower is more stable)",
+      "interface_score": "Interface-specific energy (lower is better)"
+    }
+  },
+
+  "transformation_types": {
+    "sigmoid": {
+      "description": "Standard sigmoid transformation for 'higher is better' scores",
+      "formula": "1 / (1 + 10^(-k * (score - mid) / range))",
+      "params": ["k"],
+      "default_k": 2.0
+    },
+    "rsigmoid": {
+      "description": "Reverse sigmoid transformation for 'lower is better' scores",
+      "formula": "1 / (1 + 10^(k * (score - mid) / range))",
+      "params": ["k"],
+      "default_k": 2.0
+    },
+    "dsigmoid": {
+      "description": "Double sigmoid transformation penalizing both extremes",
+      "formula": "Combined two sigmoids for optimal range",
+      "params": ["k1", "k2"],
+      "default_k1": 1.5,
+      "default_k2": 1.5
+    }
+  },
+
+  "processing": {
+    "batch_size": 10,
+    "skip_invalid": true,
+    "validate_sequences": true,
+    "helm_column": "HELM",
+    "sequence_column": "sequence"
+  },
+
+  "output": {
+    "include_raw_scores": true,
+    "include_transformed_scores": true,
+    "include_structures": false,
+    "include_metadata": true,
+    "structure_format": "pdb"
+  }
+}
