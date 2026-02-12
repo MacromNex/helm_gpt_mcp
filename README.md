@@ -1,6 +1,6 @@
-# CycPep-Tools MCP
+# HELM-GPT MCP
 
-> MCP server for cyclic peptide computational analysis - providing HELM-to-SMILES conversion, permeability prediction, and KRAS binding affinity analysis
+> MCP server for cyclic peptide optimization - providing HELM-to-SMILES conversion, permeability prediction, and joint property optimization
 
 ## Table of Contents
 - [Overview](#overview)

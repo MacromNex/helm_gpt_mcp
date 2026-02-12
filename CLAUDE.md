@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-CycPep-Tools MCP is a FastMCP server (`src/server.py`) for cyclic peptide computational analysis. It wraps standalone Python scripts as MCP tools, providing HELM-to-SMILES conversion, membrane permeability prediction (Random Forest), and KRAS binding affinity prediction (XGBoost). It also supports RL-based peptide optimization and external server scoring (Boltz2/Rosetta).
+HELM-GPT MCP is a FastMCP server (`src/server.py`) for cyclic peptide optimization. It wraps standalone Python scripts as MCP tools, providing HELM-to-SMILES conversion, membrane permeability prediction (Random Forest), and KRAS binding affinity prediction (XGBoost). It also supports RL-based peptide optimization and external server scoring (Boltz2/Rosetta).
 
 ## Environment Setup
 

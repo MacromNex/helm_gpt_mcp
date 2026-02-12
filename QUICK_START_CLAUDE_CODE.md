@@ -1,4 +1,4 @@
-# CycPepMCP Quick Start Guide for Claude Code
+# HELM-GPT MCP Quick Start Guide for Claude Code
 
 ## Installation & Setup
 
