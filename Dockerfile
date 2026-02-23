@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:2.0.1-cuda11.8-cudnn8-runtime
+FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime
 
 LABEL org.opencontainers.image.source="https://github.com/macronex/helm_gpt_mcp"
 LABEL org.opencontainers.image.description="GPT-based de novo macrocyclic peptide design with HELM support"
@@ -24,6 +24,11 @@ RUN conda install -y -c conda-forge rdkit && conda clean -afy
 RUN git clone https://github.com/macronex/helm_gpt_mcp.git /tmp/helm_gpt_mcp || true
 
 # Copy MCP server source
-COPY src/ src/
+COPY --chmod=755 src/ src/
 
+# Create writable directories for jobs/results
+RUN mkdir -p /app/jobs /app/results && chmod 777 /app /app/jobs /app/results
+
+ENV NVIDIA_CUDA_END_OF_LIFE=0
+ENTRYPOINT []
 CMD ["python", "src/server.py"]
